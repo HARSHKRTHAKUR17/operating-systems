@@ -363,3 +363,8 @@ Run `git status` before committing to confirm that the intended source and READM
 - Compare the unsafe and mutex bank-transfer examples.
 - Use GDB to set breakpoints in `worker()` and step through the program. Be aware that multithreaded execution can interleave between steps.
 - Explain in your own words why atomicity of each balance update does not make the whole transfer indivisible.
+
+threads.c ----->
+
+What does (void)arg; mean?
+It tells the compiler that you intentionally don't use the parameter. It doesn't change the program's behavior or create a thread-safety guarantee.

@@ -7,6 +7,8 @@ volatile int counter = 0;
 int loops;
 
 void *worker(void *arg) {
+    (void)arg;  // Explicitly mark the parameter as unused
+    
     int i;
     for (i = 0; i < loops; i++) {
         counter++;
