@@ -15,16 +15,17 @@ static inline double GetTime(void)
     int rc = gettimeofday(&t, NULL);
     assert(rc == 0);
 
-    return (double)t.tv_sec + (double)t.tv_usec / 1e6;
+    return (double)t.tv_sec + (double)t.tv_usec / 1000000.0;
 }
 
 /* Busy-wait for approximately howlong seconds. */
 static inline void Spin(int howlong)
 {
-    double t = GetTime();
+    double start = GetTime();
 
-    while ((GetTime() - t) < (double)howlong)
-        ; /* Do nothing */
+    while ((GetTime() - start) < (double)howlong) {
+        /* Do nothing. */
+    }
 }
 
 /* pthread_create wrapper: terminate on error. */
@@ -53,5 +54,39 @@ static inline void Pthread_join(pthread_t thread, void **value_ptr)
     }
 }
 
-#endif
+/* Mutex initialization wrapper. */
+static inline void Pthread_mutex_init(
+    pthread_mutex_t *mutex,
+    const pthread_mutexattr_t *attr)
+{
+    int rc = pthread_mutex_init(mutex, attr);
 
+    if (rc != 0) {
+        fprintf(stderr, "pthread_mutex_init failed: %d\n", rc);
+        exit(EXIT_FAILURE);
+    }
+}
+
+/* Mutex lock wrapper. */
+static inline void Pthread_mutex_lock(pthread_mutex_t *mutex)
+{
+    int rc = pthread_mutex_lock(mutex);
+
+    if (rc != 0) {
+        fprintf(stderr, "pthread_mutex_lock failed: %d\n", rc);
+        exit(EXIT_FAILURE);
+    }
+}
+
+/* Mutex unlock wrapper. */
+static inline void Pthread_mutex_unlock(pthread_mutex_t *mutex)
+{
+    int rc = pthread_mutex_unlock(mutex);
+
+    if (rc != 0) {
+        fprintf(stderr, "pthread_mutex_unlock failed: %d\n", rc);
+        exit(EXIT_FAILURE);
+    }
+}
+
+#endif /* COMMON_H */
